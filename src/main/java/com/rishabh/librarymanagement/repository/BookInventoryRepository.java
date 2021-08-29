@@ -1,0 +1,7 @@
+package com.rishabh.librarymanagement.repository;
+
+import com.rishabh.librarymanagement.dao.BookInventory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookInventoryRepository extends JpaRepository<BookInventory, Long> {
+}
