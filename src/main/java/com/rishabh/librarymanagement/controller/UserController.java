@@ -1,5 +1,6 @@
 package com.rishabh.librarymanagement.controller;
 
+import com.rishabh.librarymanagement.pojo.BookDetails;
 import com.rishabh.librarymanagement.pojo.BookDto;
 import com.rishabh.librarymanagement.pojo.UserHomeResponse;
 import com.rishabh.librarymanagement.service.UserService;
@@ -26,16 +27,26 @@ public class UserController {
     public HttpEntity<? extends Serializable> getUserHome() {
         try {
             return new ResponseEntity<UserHomeResponse>(userService.getUserHome(), HttpStatus.OK);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(value = "/user/history")
-    public HttpEntity<? extends Object> getUserHistory(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    public HttpEntity<? extends Object> getUserHistory(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "3") int size) {
         try {
             return new ResponseEntity<List<BookDto>>(userService.getUserHistory(page, size), HttpStatus.OK);
-        } catch(Exception exception) {
+        } catch (Exception exception) {
+            return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = "/book/search")
+    public ResponseEntity bookSearch(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "3") int size,
+                                     @RequestParam(name = "keyword") String keyword) {
+        try {
+            return new ResponseEntity<List<BookDetails>>(userService.getRelevantBooks(page, size, keyword), HttpStatus.OK);
+        } catch (Exception exception) {
             return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

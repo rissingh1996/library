@@ -1,15 +1,21 @@
 package com.rishabh.librarymanagement.service;
 
+import com.rishabh.librarymanagement.dao.Book;
+import com.rishabh.librarymanagement.dao.BookInventory;
 import com.rishabh.librarymanagement.dao.BookIssueHistory;
+import com.rishabh.librarymanagement.pojo.BookDetails;
 import com.rishabh.librarymanagement.pojo.BookDto;
 import com.rishabh.librarymanagement.pojo.UserHomeResponse;
+import com.rishabh.librarymanagement.repository.BookInventoryRepository;
 import com.rishabh.librarymanagement.repository.BookIssueHistoryRepository;
+import com.rishabh.librarymanagement.repository.BookRepository;
 import com.rishabh.librarymanagement.repository.LibraryRepository;
 import com.rishabh.librarymanagement.utils.CustomThreadLocal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,12 @@ public class UserService {
     @Autowired
     private BookIssueHistoryRepository bookIssueHistoryRepository;
 
+    @Autowired
+    private BookRepository bookRepository;
+
+    @Autowired
+    private BookInventoryRepository bookInventoryRepository;
+
     public UserHomeResponse getUserHome() {
         Long loginId = Integer.toUnsignedLong((Integer) customThreadLocal.getCustomThreadLocal().get().get("loginId"));
         String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
@@ -33,7 +45,7 @@ public class UserService {
         userHomeResponse.setLibrary(libraryRepository.findByLibraryCode(libraryCode));
         List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findCurrentlyIssuedBooksByUserId(loginId);
         List<BookDto> bookDtos = new ArrayList<>();
-        for(BookIssueHistory bookIssueHistory : bookIssueHistoryList) {
+        for (BookIssueHistory bookIssueHistory : bookIssueHistoryList) {
             BookDto bookDto = new BookDto();
             bookDto.setBook(bookIssueHistory.getBook());
             bookDto.setIssuedDate(bookIssueHistory.getIssuedDate());
@@ -48,7 +60,7 @@ public class UserService {
         Long loginId = Integer.toUnsignedLong((Integer) customThreadLocal.getCustomThreadLocal().get().get("loginId"));
         List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findAllByLoginId(loginId, PageRequest.of(page, size, Sort.by("issuedDate").descending()));
         List<BookDto> bookDtos = new ArrayList<>();
-        for(BookIssueHistory bookIssueHistory : bookIssueHistoryList) {
+        for (BookIssueHistory bookIssueHistory : bookIssueHistoryList) {
             BookDto bookDto = new BookDto();
             bookDto.setBook(bookIssueHistory.getBook());
             bookDto.setIssuedDate(bookIssueHistory.getIssuedDate());
@@ -57,5 +69,25 @@ public class UserService {
             bookDtos.add(bookDto);
         }
         return bookDtos;
+    }
+
+    public List<BookDetails> getRelevantBooks(int page, int size, String keyword) {
+        String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
+        List<Book> bookList = bookRepository.findAllByBookNameOrAuthorOrCategory(keyword, PageRequest.of(page, size));
+        List<BookDetails> bookDetailsList = new ArrayList<>();
+        for (Book book : bookList) {
+            BookDetails bookDetails = new BookDetails();
+            bookDetails.setBook(book);
+            BookInventory bookInventory = bookInventoryRepository.findByBookAndLibraryCode(book, libraryCode);
+            if (bookInventory != null && bookInventory.getBookCount() > 0) {
+                bookDetails.setIsAvailable(true);
+            } else {
+                bookDetails.setIsAvailable(false);
+                List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findAllByBookIdAndLibraryCodeAndReturnedDateIsNull(book, libraryCode, PageRequest.of(0, 1, Sort.by("returnedDate").descending()));
+                bookDetails.setReturnDate(!CollectionUtils.isEmpty(bookIssueHistoryList) ? bookIssueHistoryList.get(0).getReturnedDate() : null);
+            }
+            bookDetailsList.add(bookDetails);
+        }
+        return bookDetailsList;
     }
 }
