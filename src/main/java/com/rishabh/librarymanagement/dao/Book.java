@@ -5,10 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -23,11 +20,12 @@ public class Book {
 
     @JsonIgnore
     @Id
+    @GeneratedValue
     Long id;
 
     String category;
 
-    @Column(name = "book_no")
+    @Column(name = "book_no", unique = true)
     String bookNo;
 
     @Column(name = "book_name")

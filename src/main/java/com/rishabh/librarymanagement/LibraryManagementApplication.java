@@ -14,24 +14,9 @@ import java.util.Date;
 @SpringBootApplication
 public class LibraryManagementApplication {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private LibraryRepository libraryRepository;
-
-    @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private BookIssueHistoryRepository bookIssueHistoryRepository;
-
-    @Autowired
-    private BookInventoryRepository bookInventoryRepository;
-
-    public static void main(String[] args) {
-        SpringApplication.run(LibraryManagementApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(LibraryManagementApplication.class, args);
+	}
 
 //	@PostConstruct
 //	void init() {
@@ -40,7 +25,7 @@ public class LibraryManagementApplication {
 //			Library library = libraryRepository.save(new Library(1L, "DEFAULT", "default", false, true, true, true, true, true, false));
 //			user = userRepository.save(new User(1L, library, "User"));
 //		}
-//		bookIssueHistoryRepository.save(new BookIssueHistory(2L, user, bookRepository.getById(2L), new Date(), new Date(), null));
+//		bookIssueHistoryRepository.save(new BookIssueHistory(2L, user, bookRepository.getById(2L), new Date(), new Date(), new Date()));
 //	}
 
 }
