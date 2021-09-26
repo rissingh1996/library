@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Entity
 //@Table(name = "Book_Issue_History", uniqueConstraints = { @UniqueConstraint(columnNames = { "user", "book" }) })
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookIssueHistory {
+public class BookIssueHistory implements Serializable {
 
     @Id
     @GeneratedValue

@@ -64,7 +64,7 @@ public class BookService {
 
     public List<BookDetails> getBookRecommendation(String bookNo) {
         int count = 5;
-        Long loginId = Integer.toUnsignedLong((Integer) customThreadLocal.getCustomThreadLocal().get().get("loginId"));
+        String loginId = (String) customThreadLocal.getCustomThreadLocal().get().get("loginId");
         Book book = null;
         if (StringUtils.isEmpty(bookNo)) {
             List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findAllByUser(userRepository.getById(loginId), PageRequest.of(0, 1, Sort.by("issuedDate").descending()));

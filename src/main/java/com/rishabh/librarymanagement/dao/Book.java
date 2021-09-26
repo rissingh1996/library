@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "Book")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Book {
+public class Book implements Serializable {
 
     @JsonIgnore
     @Id

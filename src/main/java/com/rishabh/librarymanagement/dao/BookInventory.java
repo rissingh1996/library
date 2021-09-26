@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "Book_Inventory")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookInventory {
+public class BookInventory implements Serializable {
 
     @Id
     @GeneratedValue

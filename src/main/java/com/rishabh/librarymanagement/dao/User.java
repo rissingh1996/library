@@ -6,6 +6,7 @@ import org.hibernate.Hibernate;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,13 +19,13 @@ import java.util.Objects;
 @Entity
 @Table(name = "Userr")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
+public class User implements Serializable {
 
     @Id
-    Long loginId;
+    String loginId;
 
     @ManyToOne
-    @JoinColumn(name = "library_id")
+    @JoinColumn(name = "library_code", referencedColumnName = "library_code", nullable = false)
     Library library;
 
     @Column(name = "role", nullable = false)

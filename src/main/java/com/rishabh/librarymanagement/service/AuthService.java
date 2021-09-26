@@ -30,7 +30,7 @@ public class AuthService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getLoginId(), authRequest.getLibraryCode())
         );
-        User user = userRepository.getById(Long.valueOf(authRequest.getLoginId()));
+        User user = userRepository.getById(authRequest.getLoginId());
         Map<String, String> result = new HashMap<>();
         result.put("Access-token", jwtUtil.generateToken(user.getLoginId(), user.getLibrary().getLibraryCode()));
         result.put("Role", user.getRole());

@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -18,7 +19,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "Library")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Library {
+public class Library implements Serializable {
 
     @Id
     Long id;
