@@ -1,13 +1,14 @@
 package com.rishabh.librarymanagement.service;
 
 import com.rishabh.librarymanagement.dao.BookIssueHistory;
+import com.rishabh.librarymanagement.dao.Library;
+import com.rishabh.librarymanagement.dao.User;
 import com.rishabh.librarymanagement.pojo.BookDto;
+import com.rishabh.librarymanagement.pojo.UserPojo;
 import com.rishabh.librarymanagement.pojo.UserHomeResponse;
-import com.rishabh.librarymanagement.repository.BookInventoryRepository;
-import com.rishabh.librarymanagement.repository.BookIssueHistoryRepository;
-import com.rishabh.librarymanagement.repository.BookRepository;
-import com.rishabh.librarymanagement.repository.LibraryRepository;
+import com.rishabh.librarymanagement.repository.*;
 import com.rishabh.librarymanagement.utils.CustomThreadLocal;
+import com.rishabh.librarymanagement.utils.LibraryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -33,6 +35,12 @@ public class UserService {
 
     @Autowired
     private BookInventoryRepository bookInventoryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private LibraryUtils libraryUtils;
 
     public UserHomeResponse getUserHome() {
         Long loginId = Integer.toUnsignedLong((Integer) customThreadLocal.getCustomThreadLocal().get().get("loginId"));
@@ -65,5 +73,20 @@ public class UserService {
             bookDtos.add(bookDto);
         }
         return bookDtos;
+    }
+
+    public User createUser(UserPojo userPojo) {
+        Library library = libraryRepository.findByLibraryCode(userPojo.getLibraryCode());
+        if(library == null)
+            throw new RuntimeException("LibraryCode Not Found!!!");
+        User user = libraryUtils.getUserDao(userPojo, library);
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(String userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if(!user.isPresent())
+            throw new RuntimeException("User Not Found!!!");
+        userRepository.delete(user.get());
     }
 }

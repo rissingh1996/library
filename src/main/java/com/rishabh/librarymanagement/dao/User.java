@@ -31,6 +31,9 @@ public class User implements Serializable {
     @Column(name = "role", nullable = false)
     String role;
 
+    @Column(name = "name")
+    String name;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
