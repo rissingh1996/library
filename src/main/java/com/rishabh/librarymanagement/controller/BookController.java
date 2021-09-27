@@ -3,7 +3,7 @@ package com.rishabh.librarymanagement.controller;
 import com.rishabh.librarymanagement.dao.BookIssueHistory;
 import com.rishabh.librarymanagement.pojo.BookAddDto;
 import com.rishabh.librarymanagement.pojo.BookDetails;
-import com.rishabh.librarymanagement.pojo.BookIssueDto;
+import com.rishabh.librarymanagement.pojo.BookIssueReturnDto;
 import com.rishabh.librarymanagement.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -49,7 +50,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/book")
-    public HttpEntity<?> addBook(@RequestBody BookAddDto bookDetails) {
+    public HttpEntity<?> addBook(@RequestBody @Valid BookAddDto bookDetails) {
         try {
             bookService.addBook(bookDetails);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -79,18 +80,18 @@ public class BookController {
     }
 
     @PostMapping(value = "/book/issue")
-    public HttpEntity<?> bookIssue(@RequestBody BookIssueDto bookIssueDto) {
+    public HttpEntity<?> bookIssue(@RequestBody @Valid BookIssueReturnDto bookIssueReturnDto) {
         try {
-            return new ResponseEntity<BookIssueHistory>(bookService.issueBook(bookIssueDto), HttpStatus.OK);
+            return new ResponseEntity<BookIssueHistory>(bookService.issueBook(bookIssueReturnDto), HttpStatus.OK);
         } catch (Exception exception) {
             return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(value = "/book/return")
-    public HttpEntity<?> bookReturn(@RequestBody BookIssueDto bookIssueDto) {
+    public HttpEntity<?> bookReturn(@RequestBody BookIssueReturnDto bookIssueReturnDto) {
         try {
-            return new ResponseEntity<BookIssueHistory>(bookService.returnBook(bookIssueDto), HttpStatus.OK);
+            return new ResponseEntity<BookIssueHistory>(bookService.returnBook(bookIssueReturnDto), HttpStatus.OK);
         } catch (Exception exception) {
             return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }

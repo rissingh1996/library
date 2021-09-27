@@ -6,7 +6,7 @@ import com.rishabh.librarymanagement.dao.BookIssueHistory;
 import com.rishabh.librarymanagement.dao.User;
 import com.rishabh.librarymanagement.pojo.BookAddDto;
 import com.rishabh.librarymanagement.pojo.BookDetails;
-import com.rishabh.librarymanagement.pojo.BookIssueDto;
+import com.rishabh.librarymanagement.pojo.BookIssueReturnDto;
 import com.rishabh.librarymanagement.repository.BookInventoryRepository;
 import com.rishabh.librarymanagement.repository.BookIssueHistoryRepository;
 import com.rishabh.librarymanagement.repository.BookRepository;
@@ -168,15 +168,15 @@ public class BookService {
         return bookIssueHistoryList;
     }
 
-    public BookIssueHistory issueBook(BookIssueDto bookIssueDto) {
+    public BookIssueHistory issueBook(BookIssueReturnDto bookIssueReturnDto) {
         String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
-        Book book = bookRepository.findByBookNo(bookIssueDto.getBookNo());
+        Book book = bookRepository.findByBookNo(bookIssueReturnDto.getBookNo());
         if (book == null)
             throw new RuntimeException("Book Not Found!!!");
         BookInventory bookInventory = bookInventoryRepository.findByBookAndLibraryCode(book, libraryCode);
         if (bookInventory == null || bookInventory.getBookCount() == 0)
             throw new RuntimeException("Book Inventory Not Exist!!!");
-        Optional<User> user = userRepository.findById(bookIssueDto.getUserId());
+        Optional<User> user = userRepository.findById(bookIssueReturnDto.getUserId());
         if (!user.isPresent())
             throw new RuntimeException("User Not Exist!!!");
         bookInventory.setBookCount(bookInventory.getBookCount() - 1);
@@ -189,12 +189,12 @@ public class BookService {
         return bookIssueHistoryRepository.save(bookIssueHistory);
     }
 
-    public BookIssueHistory returnBook(BookIssueDto bookIssueDto) {
+    public BookIssueHistory returnBook(BookIssueReturnDto bookIssueReturnDto) {
         String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
-        Optional<User> user = userRepository.findById(bookIssueDto.getUserId());
+        Optional<User> user = userRepository.findById(bookIssueReturnDto.getUserId());
         if (!user.isPresent())
             throw new RuntimeException("User Not Exist!!!");
-        Book book = bookRepository.findByBookNo(bookIssueDto.getBookNo());
+        Book book = bookRepository.findByBookNo(bookIssueReturnDto.getBookNo());
         if (book == null)
             throw new RuntimeException("Book Not Found!!!");
         List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findByBookIdAndUserAndReturnedDateIsNull(book, user.get(),
