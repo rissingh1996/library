@@ -47,7 +47,7 @@ public class UserService {
         String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
         UserHomeResponse userHomeResponse = new UserHomeResponse();
         userHomeResponse.setLibrary(libraryRepository.findByLibraryCode(libraryCode));
-        List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findCurrentlyIssuedBooksByUserId(loginId);
+        List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findCurrentlyIssuedBooksByLoginId(loginId);
         List<BookDto> bookDtos = new ArrayList<>();
         for (BookIssueHistory bookIssueHistory : bookIssueHistoryList) {
             BookDto bookDto = new BookDto();
@@ -77,7 +77,7 @@ public class UserService {
 
     public User createUser(UserPojo userPojo) {
         Library library = libraryRepository.findByLibraryCode(userPojo.getLibraryCode());
-        if(library == null)
+        if (library == null)
             throw new RuntimeException("LibraryCode Not Found!!!");
         User user = libraryUtils.getUserDao(userPojo, library);
         return userRepository.save(user);
@@ -85,7 +85,7 @@ public class UserService {
 
     public void deleteUser(String userId) {
         Optional<User> user = userRepository.findById(userId);
-        if(!user.isPresent())
+        if (!user.isPresent())
             throw new RuntimeException("User Not Found!!!");
         userRepository.delete(user.get());
     }

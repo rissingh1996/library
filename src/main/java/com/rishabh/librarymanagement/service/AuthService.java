@@ -34,6 +34,7 @@ public class AuthService {
         Map<String, String> result = new HashMap<>();
         result.put("Access-token", jwtUtil.generateToken(user.getLoginId(), user.getLibrary().getLibraryCode()));
         result.put("Role", user.getRole());
+        result.put("Name", user.getName());
         return result;
     }
 }
