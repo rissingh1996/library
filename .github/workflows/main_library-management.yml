@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'library-management'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_18287B4C5E85460DBEF8BCDFDC18C4A6 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0656C9826FC344E9A447F4F648C5EE14 }}
           package: 'librarymanagement-0.0.1-SNAPSHOT.jar'
