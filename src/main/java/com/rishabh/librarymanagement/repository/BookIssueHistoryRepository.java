@@ -14,10 +14,10 @@ import java.util.List;
 public interface BookIssueHistoryRepository extends JpaRepository<BookIssueHistory, Long> {
 
     @Query("SELECT u FROM BookIssueHistory u where u.returnedDate is null and u.user.loginId = :loginId")
-    List<BookIssueHistory> findCurrentlyIssuedBooksByLoginId(@Param("loginId") Long loginId);
+    List<BookIssueHistory> findCurrentlyIssuedBooksByLoginId(@Param("loginId") String loginId);
 
     @Query("Select u from BookIssueHistory u where u.user.loginId = :loginId")
-    List<BookIssueHistory> findAllByLoginId(@Param("loginId") Long loginId, Pageable pageable);
+    List<BookIssueHistory> findAllByLoginId(@Param("loginId") String loginId, Pageable pageable);
 
     @Query("SELECT u FROM BookIssueHistory u where u.returnedDate is null and u.book = :book and u.user.library.libraryCode = :libraryCode")
     List<BookIssueHistory> findAllByBookIdAndLibraryCodeAndReturnedDateIsNull(@Param("book") Book book, @Param("libraryCode") String libraryCode, Pageable pageable);
