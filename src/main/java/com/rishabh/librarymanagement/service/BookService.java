@@ -174,7 +174,7 @@ public class BookService {
         if (book == null)
             throw new RuntimeException("Book Not Found!!!");
         BookInventory bookInventory = bookInventoryRepository.findByBookAndLibraryCode(book, libraryCode);
-        if (bookInventory == null)
+        if (bookInventory == null || bookInventory.getBookCount() == 0)
             throw new RuntimeException("Book Inventory Not Exist!!!");
         Optional<User> user = userRepository.findById(bookIssueDto.getUserId());
         if (!user.isPresent())
@@ -190,6 +190,7 @@ public class BookService {
     }
 
     public BookIssueHistory returnBook(BookIssueDto bookIssueDto) {
+        String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
         Optional<User> user = userRepository.findById(bookIssueDto.getUserId());
         if (!user.isPresent())
             throw new RuntimeException("User Not Exist!!!");
@@ -201,6 +202,9 @@ public class BookService {
         if (CollectionUtils.isEmpty(bookIssueHistoryList))
             throw new RuntimeException("No Record Found!!!");
         bookIssueHistoryList.get(0).setReturnedDate(new Date(System.currentTimeMillis()));
+        BookInventory bookInventory = bookInventoryRepository.findByBookAndLibraryCode(book, libraryCode);
+        bookInventory.setBookCount(bookInventory.getBookCount() + 1);
+        bookInventoryRepository.save(bookInventory);
         return bookIssueHistoryRepository.save(bookIssueHistoryList.get(0));
     }
 }
