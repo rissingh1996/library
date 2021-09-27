@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/user")
-    public HttpEntity<?> createUser(@RequestBody UserPojo userPojo) {
+    public HttpEntity<?> createUser(@RequestBody @Valid UserPojo userPojo) {
         try {
             return new ResponseEntity<User>(userService.createUser(userPojo), HttpStatus.CREATED);
         } catch (Exception exception) {
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/user/{id}")
-    public HttpEntity<?> createUser(@PathVariable(value = "id") String userId) {
+    public HttpEntity<?> deleteUser(@PathVariable(value = "id") String userId) {
         try {
             userService.deleteUser(userId);
             return new ResponseEntity<>(HttpStatus.OK);
