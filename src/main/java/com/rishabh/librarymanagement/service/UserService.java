@@ -43,7 +43,7 @@ public class UserService {
     private LibraryUtils libraryUtils;
 
     public UserHomeResponse getUserHome() {
-        String loginId = (String) customThreadLocal.getCustomThreadLocal().get().get("loginId");
+        String loginId = String.valueOf(customThreadLocal.getCustomThreadLocal().get().get("loginId"));
         String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
         UserHomeResponse userHomeResponse = new UserHomeResponse();
         userHomeResponse.setLibrary(libraryRepository.findByLibraryCode(libraryCode));
@@ -61,7 +61,7 @@ public class UserService {
     }
 
     public List<BookDto> getUserHistory(int page, int size) {
-        String loginId = (String) customThreadLocal.getCustomThreadLocal().get().get("loginId");
+        String loginId = String.valueOf(customThreadLocal.getCustomThreadLocal().get().get("loginId"));
         List<BookIssueHistory> bookIssueHistoryList = bookIssueHistoryRepository.findAllByLoginId(loginId, PageRequest.of(page, size, Sort.by("issuedDate").descending()));
         List<BookDto> bookDtos = new ArrayList<>();
         for (BookIssueHistory bookIssueHistory : bookIssueHistoryList) {
