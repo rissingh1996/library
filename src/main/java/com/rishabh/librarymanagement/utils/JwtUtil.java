@@ -15,10 +15,11 @@ public class JwtUtil {
 
     String secret = "RishabhSingh";
 
-    public String generateToken(String loginId, String libraryCode) {
+    public String generateToken(String loginId, String libraryCode, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("loginId", loginId);
         claims.put("libraryCode", libraryCode);
+        claims.put("role", role);
         return createToken(claims, loginId);
     }
 

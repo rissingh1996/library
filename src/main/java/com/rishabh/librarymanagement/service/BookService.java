@@ -49,7 +49,7 @@ public class BookService {
     }
 
     private BookDetails getBookDetails(Book book) {
-        String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
+        String libraryCode = String.valueOf(customThreadLocal.getCustomThreadLocal().get().get("libraryCode"));
         BookDetails bookDetails = new BookDetails();
         bookDetails.setBook(book);
         BookInventory bookInventory = bookInventoryRepository.findByBookAndLibraryCode(book, libraryCode);

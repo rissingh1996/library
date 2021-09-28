@@ -1,5 +1,6 @@
 package com.rishabh.librarymanagement.controller;
 
+import com.rishabh.librarymanagement.annotations.Authorization;
 import com.rishabh.librarymanagement.dao.User;
 import com.rishabh.librarymanagement.pojo.BookDto;
 import com.rishabh.librarymanagement.pojo.UserPojo;
@@ -39,6 +40,7 @@ public class UserController {
         }
     }
 
+    @Authorization(value = {"ADMIN"})
     @PostMapping(value = "/user")
     public HttpEntity<?> createUser(@RequestBody @Valid UserPojo userPojo) {
         try {
@@ -48,6 +50,7 @@ public class UserController {
         }
     }
 
+    @Authorization(value = {"ADMIN"})
     @DeleteMapping(value = "/user/{id}")
     public HttpEntity<?> deleteUser(@PathVariable(value = "id") String userId) {
         try {

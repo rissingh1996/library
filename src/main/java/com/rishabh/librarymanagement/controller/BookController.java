@@ -1,5 +1,6 @@
 package com.rishabh.librarymanagement.controller;
 
+import com.rishabh.librarymanagement.annotations.Authorization;
 import com.rishabh.librarymanagement.dao.BookIssueHistory;
 import com.rishabh.librarymanagement.pojo.BookAddDto;
 import com.rishabh.librarymanagement.pojo.BookDetails;
@@ -49,6 +50,7 @@ public class BookController {
         }
     }
 
+    @Authorization(value = {"ADMIN"})
     @PostMapping(value = "/book")
     public HttpEntity<?> addBook(@RequestBody @Valid BookAddDto bookDetails) {
         try {
@@ -59,6 +61,7 @@ public class BookController {
         }
     }
 
+    @Authorization(value = {"ADMIN"})
     @DeleteMapping(value = "/book/{bookNo}/{bookCount}")
     public HttpEntity<?> removeBook(@PathVariable(value = "bookNo") String bookNo, @PathVariable(value = "bookCount", required = false) Integer bookCount) {
         try {
@@ -69,6 +72,7 @@ public class BookController {
         }
     }
 
+    @Authorization(value = {"ADMIN"})
     @GetMapping(value = "/issued/book")
     public HttpEntity<?> getIssuedBooks(@RequestParam(required = false, defaultValue = "0") int page,
                                         @RequestParam(required = false, defaultValue = "3") int size) {
@@ -79,6 +83,7 @@ public class BookController {
         }
     }
 
+    @Authorization(value = {"ADMIN"})
     @PostMapping(value = "/book/issue")
     public HttpEntity<?> bookIssue(@RequestBody @Valid BookIssueReturnDto bookIssueReturnDto) {
         try {
@@ -88,6 +93,7 @@ public class BookController {
         }
     }
 
+    @Authorization(value = {"ADMIN"})
     @PostMapping(value = "/book/return")
     public HttpEntity<?> bookReturn(@RequestBody BookIssueReturnDto bookIssueReturnDto) {
         try {

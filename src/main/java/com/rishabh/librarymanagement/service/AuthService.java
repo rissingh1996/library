@@ -32,7 +32,7 @@ public class AuthService {
         );
         User user = userRepository.getById(authRequest.getLoginId());
         Map<String, String> result = new HashMap<>();
-        result.put("Access-token", jwtUtil.generateToken(user.getLoginId(), user.getLibrary().getLibraryCode()));
+        result.put("Access-token", jwtUtil.generateToken(user.getLoginId(), user.getLibrary().getLibraryCode(), user.getRole()));
         result.put("Role", user.getRole());
         result.put("Name", user.getName());
         return result;
