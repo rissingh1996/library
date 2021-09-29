@@ -39,9 +39,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private LibraryUtils libraryUtils;
-
     public UserHomeResponse getUserHome() {
         String loginId = String.valueOf(customThreadLocal.getCustomThreadLocal().get().get("loginId"));
         String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
@@ -79,7 +76,9 @@ public class UserService {
         Library library = libraryRepository.findByLibraryCode(userPojo.getLibraryCode());
         if (library == null)
             throw new RuntimeException("LibraryCode Not Found!!!");
-        User user = libraryUtils.getUserDao(userPojo, library);
+        if(!userRepository.findById(userPojo.getLoginId()).isPresent())
+            throw new RuntimeException("User Already Exist!!!");
+        User user = LibraryUtils.getUserDao(userPojo, library);
         return userRepository.save(user);
     }
 

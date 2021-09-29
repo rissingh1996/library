@@ -139,7 +139,7 @@ public class BookService {
         String libraryCode = (String) customThreadLocal.getCustomThreadLocal().get().get("libraryCode");
         Book book = bookRepository.findByBookNo(bookNo);
         if (book == null)
-            return;
+            throw new RuntimeException("Book Not Exist!!!");
         if (bookCount == null || bookCount == 0) {
             List<BookInventory> bookInventoryList = bookInventoryRepository.findByBook(book);
             Optional<BookInventory> bookInventory = bookInventoryList.stream().filter(bi -> Objects.equals(bi.getLibraryCode(), libraryCode)).findFirst();
