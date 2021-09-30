@@ -76,7 +76,7 @@ public class UserService {
         Library library = libraryRepository.findByLibraryCode(userPojo.getLibraryCode());
         if (library == null)
             throw new RuntimeException("LibraryCode Not Found!!!");
-        if(!userRepository.findById(userPojo.getLoginId()).isPresent())
+        if(userRepository.findById(userPojo.getLoginId()).isPresent())
             throw new RuntimeException("User Already Exist!!!");
         User user = LibraryUtils.getUserDao(userPojo, library);
         return userRepository.save(user);

@@ -40,7 +40,6 @@ public class Book implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Book book = (Book) o;
-
         return Objects.equals(id, book.id);
     }
 
