@@ -45,7 +45,7 @@ public class BookService {
 
     public List<BookDetails> getRelevantBooks(int page, int size, String keyword) {
         List<Book> bookList = bookRepository.findAllByBookNameOrAuthorOrCategory(keyword, PageRequest.of(page, size));
-        return new ArrayList<>(getBookDetailList(bookList));
+        return getBookDetailList(bookList);
     }
 
     private BookDetails getBookDetails(Book book) {
@@ -87,7 +87,7 @@ public class BookService {
         List<String> bookNoList = new ArrayList<>();
         bookNoList.add(bookNo);
         List<Book> bookListByAuthor = bookRepository.findByAuthorAndNotInBookNo(book.getAuthor(), bookNoList, PageRequest.of(0, 2));
-        List<BookDetails> bookDetailsList = new ArrayList<>(getBookDetailList(bookListByAuthor));
+        List<BookDetails> bookDetailsList = getBookDetailList(bookListByAuthor);
         addToBookNoList(bookNoList, bookListByAuthor);
         count = count - bookListByAuthor.size();
         List<Book> bookListByGenres = bookRepository.findByBookNoAndNotInBookNo(bookNo.substring(0, 4), bookNoList, PageRequest.of(0, count));
@@ -116,7 +116,9 @@ public class BookService {
     private List<BookDetails> getBookDetailList(List<Book> bookList) {
         List<BookDetails> bookDetailsList = new ArrayList<>();
         for (Book book : bookList) {
-            bookDetailsList.add(getBookDetails(book));
+            BookDetails bookDetails = getBookDetails(book);
+            if(bookDetails.getIsAvailable() || bookDetails.getReturnDate() != null)
+                bookDetailsList.add(bookDetails);
         }
         return bookDetailsList;
     }
