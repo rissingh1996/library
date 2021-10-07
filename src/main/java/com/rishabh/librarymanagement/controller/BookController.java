@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -98,6 +99,20 @@ public class BookController {
     public HttpEntity<?> bookReturn(@RequestBody BookIssueReturnDto bookIssueReturnDto) {
         try {
             return new ResponseEntity<BookIssueHistory>(bookService.returnBook(bookIssueReturnDto), HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Authorization(value = {"ADMIN"})
+    @PostMapping(value = "/book/bulkUpload")
+    public HttpEntity<?> BulkUpload(@RequestParam("file") MultipartFile multipartFile) {
+        try {
+            if (!"text/csv".equals(multipartFile.getContentType())) {
+                throw new RuntimeException("Could not upload the file:" + multipartFile.getName());
+            }
+            bookService.bulkUpload(multipartFile.getInputStream());
+            return new ResponseEntity<String>("Uploaded successfully!!!", HttpStatus.OK);
         } catch (Exception exception) {
             return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }

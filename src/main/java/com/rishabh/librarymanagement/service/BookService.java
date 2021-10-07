@@ -12,6 +12,9 @@ import com.rishabh.librarymanagement.repository.BookIssueHistoryRepository;
 import com.rishabh.librarymanagement.repository.BookRepository;
 import com.rishabh.librarymanagement.repository.UserRepository;
 import com.rishabh.librarymanagement.utils.CustomThreadLocal;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,6 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import static com.rishabh.librarymanagement.utils.LibraryUtils.getBook;
@@ -117,7 +124,7 @@ public class BookService {
         List<BookDetails> bookDetailsList = new ArrayList<>();
         for (Book book : bookList) {
             BookDetails bookDetails = getBookDetails(book);
-            if(bookDetails.getIsAvailable() || bookDetails.getReturnDate() != null)
+            if (bookDetails.getIsAvailable() || bookDetails.getReturnDate() != null)
                 bookDetailsList.add(bookDetails);
         }
         return bookDetailsList;
@@ -208,5 +215,26 @@ public class BookService {
         bookInventory.setBookCount(bookInventory.getBookCount() + 1);
         bookInventoryRepository.save(bookInventory);
         return bookIssueHistoryRepository.save(bookIssueHistoryList.get(0));
+    }
+
+    public void bulkUpload(InputStream inputStream) {
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+             CSVParser csvParser = new CSVParser(fileReader,
+                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim())) {
+            Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+            for (CSVRecord csvRecord : csvRecords) {
+                BookAddDto bookAddDto = new BookAddDto(
+                        csvRecord.get(0),
+                        csvRecord.get(1),
+                        csvRecord.get(2),
+                        csvRecord.get(3),
+                        csvRecord.get(4),
+                        Integer.parseInt(csvRecord.get(5))
+                );
+                addBook(bookAddDto);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+        }
     }
 }
