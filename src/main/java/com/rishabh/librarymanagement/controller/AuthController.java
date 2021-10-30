@@ -33,6 +33,5 @@ public class AuthController {
     @GetMapping(value = "/hello")
     public String test() {
         return "Hello World!!!";
-
     }
 }
