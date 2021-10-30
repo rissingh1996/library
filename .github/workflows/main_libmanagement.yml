@@ -21,13 +21,13 @@ jobs:
         with:
           java-version: '8'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Build with Gradle
+        run: gradle build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: java-app
+          name: librarymanagement-0.0.1-SNAPSHOT
           path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
@@ -41,7 +41,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: java-app
+          name: librarymanagement-0.0.1-SNAPSHOT
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -50,4 +50,4 @@ jobs:
           app-name: 'libmanagement'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_556EAA7D9FF846D7A1CB63933A9F3AC7 }}
-          package: '*.jar'
+          package: 'librarymanagement-0.0.1-SNAPSHOT.jar'
